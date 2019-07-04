@@ -1,11 +1,6 @@
 from typing import Callable, Union
 
-from graphql.type import (
-    GraphQLNamedType,
-    GraphQLObjectType,
-    GraphQLSchema,
-    GraphQLField,
-)
+from graphql.type import GraphQLObjectType, GraphQLSchema, GraphQLField
 
 from .types import Resolver, SchemaBindable
 from .interfaces import _type_implements_interface
