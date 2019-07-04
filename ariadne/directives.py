@@ -1,10 +1,9 @@
-from typing import Callable, Union, Optional, List, Dict
+from typing import Callable, Union, List
 
 from graphql.type import GraphQLObjectType, GraphQLSchema, GraphQLField
 from graphql.language import DirectiveNode, StringValueNode
 
 from .types import Resolver, SchemaBindable
-from .interfaces import _type_implements_interface
 
 
 class DirectiveType(SchemaBindable):
