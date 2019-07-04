@@ -1,13 +1,14 @@
-from typing import Callable, Union
+from typing import Callable, Union, Optional, List, Dict
 
 from graphql.type import GraphQLObjectType, GraphQLSchema, GraphQLField
+from graphql.language import DirectiveNode, StringValueNode
 
 from .types import Resolver, SchemaBindable
 from .interfaces import _type_implements_interface
 
 
 class DirectiveType(SchemaBindable):
-    _field: Resolver
+    _field: Union[None, Resolver]
 
     def __init__(self, name: str) -> None:
         self.name = name
@@ -18,36 +19,44 @@ class DirectiveType(SchemaBindable):
         return f
 
     def _call_directives(
-        self, directives: list, field: Union[GraphQLObjectType, GraphQLField]
+        self,
+        directives: List[DirectiveNode],
+        field: Union[GraphQLObjectType, GraphQLField],
     ) -> None:
         for directive in directives:
             if directive.name.value != self.name:
                 continue
 
-            arguments = {}
+            arguments: dict = {}
+
             for arg in directive.arguments:
-                arguments[arg.name.value] = arg.value.value
-            self._field(field, **arguments)
+                if isinstance(arg.name, StringValueNode) and isinstance(
+                    arg.value, StringValueNode
+                ):
+                    arguments[arg.name.value] = arg.value.value
+
+            if self._field:
+                self._field(field, **arguments)
 
     def bind_to_schema(self, schema: GraphQLSchema) -> None:
         directive = schema.get_directive(self.name)
+
+        if not self._field:
+            raise ValueError(
+                "Directive %s doesnot have any resolver function" % self.name
+            )
+
         if not directive:
             raise ValueError("Directive %s is not defined in the schema" % self.name)
-
-        for object_type in schema.type_map.values():
-            if _type_implements_interface(self.name, object_type):
-                self.bind_resolvers_to_graphql_type(object_type, replace_existing=False)
 
         for graphql_type in schema.type_map.values():
             if not isinstance(graphql_type, GraphQLObjectType):
                 continue
 
-            if graphql_type.ast_node:
-                if not graphql_type.ast_node.directives:
-                    self._call_directives(
-                        graphql_type.ast_node.directives, graphql_type
-                    )
+            ast_node = graphql_type.ast_node
+            if graphql_type and ast_node and ast_node.directives:
+                self._call_directives(ast_node.directives, graphql_type)
 
             for field in graphql_type.fields.values():
-                if field.ast_node and field.ast_node.directives:
+                if field.ast_node:
                     self._call_directives(field.ast_node.directives, field)
