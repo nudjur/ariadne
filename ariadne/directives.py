@@ -31,7 +31,7 @@ class DirectiveType(SchemaBindable):
 
             arguments = {}
             for arg in directive.arguments:
-                argumentss[arg.name.value] = arg.value.value
+                arguments[arg.name.value] = arg.value.value
             self._field(field, **arguments)
 
     def bind_to_schema(self, schema: GraphQLSchema) -> None:
