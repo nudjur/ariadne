@@ -1,6 +1,4 @@
-import enum
-
-from typing import Callable, List, Optional, cast, Union
+from typing import Callable, Union
 
 from graphql.type import (
     GraphQLNamedType,
@@ -33,7 +31,7 @@ class DirectiveType(SchemaBindable):
 
             arguments = {}
             for arg in directive.arguments:
-                argument[arg.name.value] = arg.value.value
+                argumentss[arg.name.value] = arg.value.value
             self._field(field, **arguments)
 
     def bind_to_schema(self, schema: GraphQLSchema) -> None:
