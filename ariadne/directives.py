@@ -41,6 +41,9 @@ class DirectiveType(SchemaBindable):
         directive = schema.get_directive(self.name)
 
         if not self._field:
+            # FIXME Right now it is throwing error because there is no directive for now
+            # Will get back to this
+            return
             raise ValueError(
                 "Directive %s doesnot have any resolver function" % self.name
             )
