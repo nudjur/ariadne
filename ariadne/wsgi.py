@@ -1,9 +1,9 @@
 import json
 from cgi import FieldStorage
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, List, Optional, Type, Union
 
 from graphql import GraphQLError, GraphQLSchema
-from graphql.execution import MiddlewareManager
+from graphql.execution import Middleware, MiddlewareManager
 
 from .constants import (
     CONTENT_TYPE_JSON,
@@ -19,7 +19,16 @@ from .exceptions import HttpBadRequestError, HttpError, HttpMethodNotAllowedErro
 from .file_uploads import combine_multipart_data
 from .format_error import format_error
 from .graphql import graphql_sync
-from .types import ContextValue, ErrorFormatter, GraphQLResult, RootValue
+from .types import ContextValue, ErrorFormatter, Extension, GraphQLResult, RootValue
+
+ExtensionList = Optional[List[Type[Extension]]]
+Extensions = Union[
+    Callable[[Any, Optional[ContextValue]], ExtensionList], ExtensionList
+]
+MiddlewareList = Optional[List[Middleware]]
+Middlewares = Union[
+    Callable[[Any, Optional[ContextValue]], MiddlewareList], MiddlewareList
+]
 
 
 class GraphQL:
@@ -32,13 +41,15 @@ class GraphQL:
         debug: bool = False,
         logger: Optional[str] = None,
         error_formatter: ErrorFormatter = format_error,
-        middleware: Optional[MiddlewareManager] = None,
+        extensions: Optional[Extensions] = None,
+        middleware: Optional[Middlewares] = None,
     ) -> None:
         self.context_value = context_value
         self.root_value = root_value
         self.debug = debug
         self.logger = logger
         self.error_formatter = error_formatter
+        self.extensions = extensions
         self.middleware = middleware
         self.schema = schema
 
@@ -149,21 +160,43 @@ class GraphQL:
         return combine_multipart_data(operations, files_map, form)
 
     def execute_query(self, environ: dict, data: dict) -> GraphQLResult:
+        context_value = self.get_context_for_request(environ)
+        extensions = self.get_extensions_for_request(environ, context_value)
+        middleware = self.get_middleware_for_request(environ, context_value)
+
         return graphql_sync(
             self.schema,
             data,
-            context_value=self.get_context_for_request(environ),
+            context_value=context_value,
             root_value=self.root_value,
             debug=self.debug,
             logger=self.logger,
             error_formatter=self.error_formatter,
-            middleware=self.middleware,
+            extensions=extensions,
+            middleware=middleware,
         )
 
-    def get_context_for_request(self, environ: dict) -> Any:
+    def get_context_for_request(self, environ: dict) -> Optional[ContextValue]:
         if callable(self.context_value):
             return self.context_value(environ)
         return self.context_value or environ
+
+    def get_extensions_for_request(
+        self, environ: dict, context: Optional[ContextValue]
+    ) -> ExtensionList:
+        if callable(self.extensions):
+            return self.extensions(environ, context)
+        return self.extensions
+
+    def get_middleware_for_request(
+        self, environ: dict, context: Optional[ContextValue]
+    ) -> Optional[MiddlewareManager]:
+        middleware = self.middleware
+        if callable(middleware):
+            middleware = middleware(environ, context)
+        if middleware:
+            return MiddlewareManager(*middleware)
+        return None
 
     def return_response_from_result(
         self, start_response: Callable, result: GraphQLResult

@@ -1,8 +1,18 @@
 # CHANGELOG
 
-## 0.6.0 (unreleased)
+## 0.6.0 (2019-08-12)
 
+- Updated `graphql-core-next` to 1.1.1 which has feature parity with GraphQL.js 14.4.0.
 - Added basic extensions system to the `ariadne.graphql.graphql`. Currently only available in the `ariadne.asgi.GraphQL` app.
+- Added `convert_kwargs_to_snake_case` utility decorator that recursively converts the case of arguments passed to resolver from `camelCase` to `snake_case`.
+- Removed `default_resolver` and replaced its uses in library with `graphql.default_field_resolver`.
+- Resolver returned by `resolve_to` util follows `graphql.default_field_resolver` behaviour and supports resolving to callables.
+- Added `is_default_resolver` utility for checking if resolver function is `graphql.default_field_resolver`, resolver created with `resolve_to` or `alias`.
+- Added `ariadne.contrib.tracing` package with `ApolloTracingExtension` and `OpenTracingExtension` GraphQL extensions for adding Apollo tracing and OpenTracing monitoring to the API (ASGI only).
+- Updated ASGI app disconnection handler to also check client connection state.
+- Fixed ASGI app `context_value` option support for async callables.
+- Updated `middleware` option implementation in ASGI and WSGI apps to accept list of middleware functions or callable returning those.
+- Moved error formatting utils (`get_formatted_error_context`, `get_formatted_error_traceback`, `unwrap_graphql_error`) to public API.
 
 
 ## 0.5.0 (2019-06-07)

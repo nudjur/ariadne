@@ -17,6 +17,7 @@ eggs/
 lib/
 lib64/
 parts/
+pip-wheel-metadata/
 sdist/
 var/
 wheels/
@@ -109,3 +110,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# PyCharm
+.idea

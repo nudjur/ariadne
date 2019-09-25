@@ -29,31 +29,7 @@ class Extension(Protocol):
     def request_started(self, context: ContextValue):
         pass  # pragma: no cover
 
-    def request_finished(
-        self, context: ContextValue, error: Optional[Exception] = None
-    ):
-        pass  # pragma: no cover
-
-    def parsing_started(self, query: str):
-        pass  # pragma: no cover
-
-    def parsing_finished(self, query: str, error: Optional[Exception] = None):
-        pass  # pragma: no cover
-
-    def validation_started(self, context: ContextValue):
-        pass  # pragma: no cover
-
-    def validation_finished(
-        self, context: ContextValue, error: Optional[Exception] = None
-    ):
-        pass  # pragma: no cover
-
-    def execution_started(self, context: ContextValue):
-        pass  # pragma: no cover
-
-    def execution_finished(
-        self, context: ContextValue, error: Optional[Exception] = None
-    ):
+    def request_finished(self, context: ContextValue):
         pass  # pragma: no cover
 
     async def resolve(
@@ -69,6 +45,11 @@ class Extension(Protocol):
 
     def format(self) -> dict:
         return {}  # pragma: no cover
+
+
+class ExtensionSync(Extension):
+    def resolve(self, next_: Resolver, parent: Any, info: GraphQLResolveInfo, **kwargs):
+        return next_(parent, info, **kwargs)
 
 
 class SchemaBindable(Protocol):

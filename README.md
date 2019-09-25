@@ -20,7 +20,7 @@ Documentation is available [here](https://ariadnegraphql.org).
 ## Features
 
 - Simple, quick to learn and easy to memorize API.
-- Compatibility with GraphQL.js version 14.2.1.
+- Compatibility with GraphQL.js version 14.4.0.
 - Queries, mutations and input types.
 - Asynchronous resolvers and query execution.
 - Subscriptions.
@@ -30,7 +30,8 @@ Documentation is available [here](https://ariadnegraphql.org).
 - Defining schema using SDL strings.
 - Loading schema from `.graphql` files.
 - WSGI middleware for implementing GraphQL in existing sites.
-- Opt-in automatic resolvers mapping between `camelCase` and `snake_case`.
+- Apollo Tracing and [OpenTracing](http://opentracing.io) extensions for API monitoring.
+- Opt-in automatic resolvers mapping between `camelCase` and `snake_case`, and a `@convert_kwargs_to_snake_case` function decorator for converting `camelCase` kwargs to `snake_case`.
 - Build-in simple synchronous dev server for quick GraphQL experimentation and GraphQL Playground.
 - Support for [Apollo GraphQL extension for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=apollographql.vscode-apollo).
 - GraphQL syntax validation via `gql()` helper function. Also provides colorization if Apollo GraphQL extension is installed.
@@ -118,6 +119,8 @@ Contributing
 We are welcoming contributions to Ariadne! If you've found a bug or issue, or if you have any questions or feedback, feel free to use [GitHub issues](https://github.com/mirumee/ariadne/issues).
 
 For guidance and instructions, please see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+Website and the docs have their own GitHub repository: [mirumee/ariadne-website](https://github.com/mirumee/ariadne-website)
 
 
 **Crafted with ❤️ by [Mirumee Software](http://mirumee.com)**
