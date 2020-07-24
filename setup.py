@@ -25,12 +25,12 @@ setup(
     long_description=README,
     long_description_content_type="text/markdown",
     license="BSD",
-    version="0.7.0a1",
+    version="100.1.0",
     url="https://github.com/mirumee/ariadne",
     packages=["ariadne"],
     include_package_data=True,
     install_requires=[
-        "graphql-core-next<3.0.0",
+        "graphql-core@https://github.com/nudjur/graphql-core/archive/master.zip#egg=graphql-core-2.0.0"
         "python-multipart>=0.0.5",
         "starlette<0.13",
         "typing_extensions>=3.6.0",

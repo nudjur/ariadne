@@ -4,7 +4,8 @@
 #
 #    pip-compile --output-file requirements.txt setup.py
 #
-graphql-core-next==1.1.1
+  
+graphql-core@https://github.com/nudjur/graphql-core/archive/master.zip#egg=graphql-core-2.0.0
 python-multipart==0.0.5
 six==1.12.0               # via python-multipart
 starlette==0.12.7
