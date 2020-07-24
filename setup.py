@@ -30,7 +30,7 @@ setup(
     packages=["ariadne"],
     include_package_data=True,
     install_requires=[
-        "graphql-core@https://github.com/nudjur/graphql-core/archive/master.zip#egg=graphql-core-2.0.0"
+        "graphql-core@https://github.com/nudjur/graphql-core/archive/master.zip#egg=graphql-core-2.0.0",
         "python-multipart>=0.0.5",
         "starlette<0.13",
         "typing_extensions>=3.6.0",
